@@ -1,4 +1,5 @@
 import express from 'express';
+import cors from 'cors';
 import mongooseConnect from './db-utils/mongoose-connection.js';
 import CustomerRouter from './routes/CustomerRouter.js';
 import ProductRouter from './routes/ProductsRouter.js';
@@ -9,6 +10,7 @@ await mongooseConnect();
 
 
 server.use(express.json());
+server.use(cors());
 
 
  server.use("/Products",ProductRouter);

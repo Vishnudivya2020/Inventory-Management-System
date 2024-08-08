@@ -14,6 +14,7 @@ const dbPassword =process.env.DB_PASSWORD || "";
 const cloudUri =`mongodb+srv://${dbUserName}:${dbPassword }@${dbCluster}/${dbName}?retryWrites=true&w=majority&appName=Cluster0`
 const mongooseConnect =async () =>{
     try{
+        // await mongoose.connect(localUri);
         await mongoose.connect(cloudUri);
         console.log("Mongoose Connection established");
 

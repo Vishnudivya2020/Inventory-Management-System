@@ -1,7 +1,7 @@
 // routes/Customers.js
 import express from 'express';
 import mongoose from 'mongoose';
-import CustomerModel from '../db-utils/models/Customer.js';
+import {CustomerModel} from '../db-utils/models/Customer.js';
 const CustomerRouter = express.Router();
 
 //Get all Customers details

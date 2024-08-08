@@ -3,7 +3,7 @@
 
 import express from 'express';
 import mongoose from "mongoose";
-import ProductModel from "../db-utils/models/Product.js"
+import {ProductModel} from "../db-utils/models/Product.js"
 
 const ProductRouter = express.Router();
 

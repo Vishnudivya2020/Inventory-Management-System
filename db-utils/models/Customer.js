@@ -10,9 +10,7 @@ const CustomerSchema = new mongoose.Schema({
         type: String,
         required: true,
         unique: true,
-       
-       
-      },
+       },
       Type: {
         type: String,
         required: true
@@ -35,5 +33,6 @@ const CustomerSchema = new mongoose.Schema({
     
 const CustomerModel = mongoose.model('Customer', CustomerSchema,'Customer');
 
-export default CustomerModel;
+
+export {CustomerModel };
 

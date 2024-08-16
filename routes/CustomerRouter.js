@@ -31,6 +31,7 @@ CustomerRouter.post('/', async (req, res) => {
         Type,
         CurrentOrders,
         ShippingAddress,
+        imageUrl,
         id:Date.now().toString(),
 
       });

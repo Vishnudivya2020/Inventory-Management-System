@@ -87,6 +87,7 @@ loginRouter.post('/', async (req, res) => {
                             user: userObj,
                         });
                     } else {
+                        console.log(res);
                         res.status(400).send({ msg: "User Credentials Failed", code: 0 });
                     }
                 }

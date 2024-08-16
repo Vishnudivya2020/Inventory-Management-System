@@ -6,6 +6,7 @@ import { AdminModel } from '../../db-utils/models/Adminmodel.js';
 const registerRouter = express.Router();
 
 registerRouter.post('/', async (req, res) => {
+  console.log(req)
   const { name, email, password, role } = req.body;  // Destructure the request body
 
   // Check if all required fields are provided
@@ -20,9 +21,9 @@ registerRouter.post('/', async (req, res) => {
   try {
     // Check if the user or admin already exists
     const userObj = await userModel.findOne({ email });
-    const adminObj = await AdminModel.findOne({ email });
+    const AdminObj = await AdminModel.findOne({ email });
 
-    if (userObj || adminObj) {
+    if (userObj || AdminObj) {
       return res.status(400).json({ msg: "User already exists" }); // Ensure JSON response
     }
 
@@ -41,7 +42,7 @@ registerRouter.post('/', async (req, res) => {
         isVerified: false,
       };
 
-      if (role === 'admin') {
+      if (role === 'Admin') {
         const admin = new AdminModel(newUser);
         await admin.save();
         return res.status(201).json({ msg: 'Admin registered successfully' }); // Ensure JSON response

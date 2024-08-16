@@ -23,6 +23,10 @@ const CustomerSchema = new mongoose.Schema({
         type: String,
         required: true
       },
+      imageUrl: {
+        type: String,
+        default: 'path/to/default/image.jpg' ,
+      },
       id:{
         type:String,
         required:true

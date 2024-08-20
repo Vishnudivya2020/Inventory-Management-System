@@ -33,9 +33,8 @@ CustomerRouter.post('/', async (req, res) => {
         ShippingAddress,
         imageUrl,
         id:Date.now().toString(),
-
-      });
-  
+       });
+        console.log(newCustomer);
       await newCustomer.save();
       res.send({msg:"Customer created successfully"});
     }catch (err){

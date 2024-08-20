@@ -1,104 +1,63 @@
-
-
-// import express from 'express';
-// import { userModel } from '../../db-utils/models/usermodel.js';
-// import bcrypt  from  'bcryptjs';
-
-// const loginRouter = express.Router();
-
-
-// loginRouter.post('/', async (req, res) => {
-//    const userData = req.body;
-//     console.log("Received login data:",userData); 
-//    //check if the user already exists
-//    try{
-//    const userObj = await userModel.findOne({email:userData.email},{__v:0,_id:0});
-//    console.log(userObj);
-//    if(userObj){
-//      console.log("User found:",userObj);
-//     //Login to handle successful login
-//     //verify the password send success msg only if the password is correct.
-
-//     bcrypt.compare(userData.password, userObj.password,async function (err, result){
-//      //reslt == true
-//         if(err){
-//            res.status(500).send({msg:"Somthing went wrong"});
-//         }else{
-//             if(result){
-//                 // const user = await userModel.findOne({email:userData.email});
-//                 res.status(200).send({
-//                 msg:"User Successfully Logged in",
-//                 code:1, 
-//                 user:userObj,
-//             });
-                
-//             }else {
-//                 res.status(400).send({msg:"user Credentials Failed",code:0});
-//             }
-//         }
-//     });
-//    }else{
-//     res.status(404).send({msg:"User not Found"}); 
-//    }
-//    } catch (error) {
-//         console.error('Login error:', error);
-//         return res.status(500).send({ msg: "Server error during login" });
-//       }
-//     });
-    
-//     export { loginRouter };
-
-
-import express from 'express';
-import { userModel } from '../../db-utils/models/usermodel.js';
-import { AdminModel } from '../../db-utils/models/Adminmodel.js'; // Import the Admin model
-import bcrypt from 'bcryptjs';
+import  express from "express";
+import bcrypt from  "bcryptjs";
+// import jwt from "jsonwebtoken";
+import { userModel } from "../../db-utils/models/usermodel.js";
 
 const loginRouter = express.Router();
 
-loginRouter.post('/', async (req, res) => {
-    const { email, password, role } = req.body;
+loginRouter.post("/",async(req,res)=>{
+    const userData = req.body;
 
-    if(!role){
-        return res.status(400).send({msg:"Role  is  required"});
-        
-    }
-    console.log("Received login data:", { email, role }); 
 
-    try {
-        // Choose the correct model based on the role
-        const Model = role === 'Admin' ? AdminModel : userModel;
+    //check if the user already exists
+    const userObj = await userModel.findOne({email:userData.email});
 
-        const userObj = await Model.findOne({ email }, { __v:0, _id:0 });
-        console.log(userObj);
+    if(userObj){
+        //Login to handle successful login
+        //verify the password send success message only if the password is correct
 
-        if (userObj) {
-            console.log("User found:", userObj);
-            
-            // Verify the password
-            bcrypt.compare(password, userObj.password, async function (err, result) {
-                if (err) {
-                    res.status(500).send({ msg: "Something went wrong" });
-                } else {
-                    if (result) {
-                        res.status(200).send({
-                            msg: "User Successfully Logged in",
-                            code: 1, 
-                            user: userObj,
-                        });
-                    } else {
-                        console.log(res);
-                        res.status(400).send({ msg: "User Credentials Failed", code: 0 });
+    bcrypt.compare(userData.password,userObj.password, async function(err,result){
+        //result = true
+        if(err) {
+            res.status(500).send({msg:"somthing went wrong"});
+
+        }else{
+            if(result){
+                console.log("userObj:",userObj);
+                const User=await userModel.findOne(
+                    {email:userData.email},
+                    {
+                      projection:{  password:0,__v:0,_id:0}
                     }
-                }
+                );
+            //     .exec();
+            //      try{
+            //     var token = jwt.sign(User,'shhhhh',{
+            //         expiresIn:"1day" });
+            //         res.json({token});
+            //     }catch(err){
+            //         console.log(err);
+            //         res.status(500).send('Error signing the token');
+            //     }
+
+            // console.log(token);
+             
+               res.status(200).send({
+                msg:'User Successfully Logged in',
+                code:1,
+                User,
             });
-        } else {
-            res.status(404).send({ msg: "User not Found" }); 
+            }else{
+                res.status(400).send({msg:"user Credentials failed",code:0});
+            }
         }
-    } catch (error) {
-        console.error('Login error:', error);
-        return res.status(500).send({ msg: "Server error during login" });
+    });
+    
+    }else{
+      res.status(404).send({msg:"user not found"});
     }
 });
+export default  loginRouter ;
 
-export { loginRouter };
+
+

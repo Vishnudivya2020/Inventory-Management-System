@@ -3,6 +3,8 @@
 import express from "express";
 import { userModel} from "../../db-utils/models/usermodel.js";
 import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import { mailOptions, transporter } from "../mail-utils.js";
 
 const registerRouter = express.Router();
 
@@ -27,18 +29,30 @@ registerRouter.post("/",async(req,res)=>{
                     ...userData,
                     password:hash,
                    id, 
-            
-           
-           });
+                   isVerified:false,
+             });
+             var token = jwt.sign(
+                {name:userData.name,email:userData.email},
+                process.env.JWT_SECRET,
+                {
+                expiresIn:"15m",
+             }
+            );
         await newUser.save(); //validates and inserts the record
+         await transporter.sendMail({
+        ...mailOptions,
+        to: userData.email, 
+        subject:"Welcome to the Application,verify Accound",
+        text:`To continue,Please verify your Email Address ${process.env.FE_URL}/verify-account?token=${token}`,
 
+         });
         res.send({msg:"User saved SuccessFully"});
     }
 });
  } 
 
 });
-
+ 
 export default  registerRouter;
 
 

@@ -9,6 +9,7 @@ import  registerRouter from './routes/auth/register.js';
 import  loginRouter from './routes/auth/login.js';
 import UserRouter from './routes/UserRouter.js';
 import AdminRouter from './routes/AdminRouter.js';
+import verifyUserRouter from './routes/auth/verifyUser.js';
 
 const server =express();
 await mongooseConnect(); 
@@ -35,22 +36,40 @@ const authApi =(req,res,next) => {
     try{
         const token =req.headers["authorization"];
         console.log(token);
-        jwt.verify(token,process.env.JWT_SECRET);
+         const data = jwt.verify(token,process.env.JWT_SECRET);
+         if(data.role === "admin"){
+            next();
+         }else{
+            throw new Error();
+         }
+       
+    }catch(err){
+        console.log(err.message);
+        res.status(403).send({msg:"Unathorized"});
+    }
+};
+
+const authAllApi = (req,res,next) =>{
+    try{
+        const token =req.headers["authorization"];
+        console.log(token);
+       jwt.verify(token,process.env.JWT_SECRET);
         next();
     }catch(err){
         console.log(err.message);
         res.status(403).send({msg:"Unathorized"});
     }
-   
-};
+}; 
+
 
 
  server.use("/Products",authApi,ProductRouter);
- server.use("/Customer",CustomerRouter);
+ server.use("/Customer",authAllApi,CustomerRouter);
+ server.use("/users",authAllApi,UserRouter);
+ server.use("/admin",authAllApi,AdminRouter);
+ server.use("/verify-user ",verifyUserRouter);
  server.use("/register",registerRouter);
  server.use("/login",loginRouter);
- server.use("/users",UserRouter);
- server.use("/admin",AdminRouter);
  
 const port=2222;
 

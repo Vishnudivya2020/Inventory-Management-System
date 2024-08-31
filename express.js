@@ -67,7 +67,7 @@ const authAllApi = (req,res,next) =>{
  server.use("/Customer",authAllApi,CustomerRouter);
  server.use("/users",authAllApi,UserRouter);
  server.use("/admin",authAllApi,AdminRouter);
- server.use("/verify-user ",verifyUserRouter);
+ server.use("/verify-user",verifyUserRouter);
  server.use("/register",registerRouter);
  server.use("/login",loginRouter);
  

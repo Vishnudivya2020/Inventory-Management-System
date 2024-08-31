@@ -22,7 +22,11 @@ const userSchema = new mongoose.Schema({
     id: {
         type: String,
         required: true,
-    }
+    },
+    isVerified: {
+        type: "boolean",
+        required: false,
+      },
 });
 
 const userModel = mongoose.model('users', userSchema, "users");

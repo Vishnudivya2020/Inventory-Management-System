@@ -10,6 +10,8 @@ const registerRouter = express.Router();
 
 registerRouter.post("/",async(req,res)=>{
     const userData = req.body;
+
+    console.log(userData);
   
     //check if the user already exists
     const userObj = await userModel.findOne({email:userData.email});
@@ -30,12 +32,13 @@ registerRouter.post("/",async(req,res)=>{
                     password:hash,
                    id, 
                    isVerified:false,
+                   profilePicUrl: userData.profilePicUrl || null,
              });
              var token = jwt.sign(
                 {name:userData.name,email:userData.email},
                 process.env.JWT_SECRET,
                 {
-                expiresIn:"15m",
+                expiresIn:"1d",
              }
             );
         await newUser.save(); //validates and inserts the record

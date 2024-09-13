@@ -27,6 +27,11 @@ const userSchema = new mongoose.Schema({
         type: "boolean",
         required: false,
       },
+      profilePicUrl: {    
+        type: String,
+        required:false, // You can make this required if needed
+    },
+
 });
 
 const userModel = mongoose.model('users', userSchema, "users");

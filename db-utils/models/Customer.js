@@ -25,7 +25,7 @@ const CustomerSchema = new mongoose.Schema({
       },
       imageUrl: {
         type: String,
-        default: 'path/to/default/image.jpg' ,
+        
       },
       id:{
         type:String,

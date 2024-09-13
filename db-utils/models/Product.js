@@ -24,7 +24,12 @@ const ProductSchema = new mongoose.Schema({
       },
     id:{
         type:String,
-        required:true
+        required:true,
+        default: () => Date.now().toString()
+    },
+    orderId:{
+        type:String,
+        required:false
     }
 });
 

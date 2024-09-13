@@ -14,35 +14,52 @@ CustomerRouter.get('/', async (req, res) => {
     }
 });
 
-//Create new Customer
 CustomerRouter.post('/', async (req, res) => {
     try {
-      const { customerName, Email, Type, CurrentOrders, ShippingAddress } = req.body;
-  
-      // Check if email already exists
-      const existingCustomer = await CustomerModel.findOne({ Email });
-      if (existingCustomer) {
-        return res.status(400).json({ msg: 'Email already exists' });
-      }
-  
-      const newCustomer = new CustomerModel({
-        customerName,
-        Email,
-        Type,
-        CurrentOrders,
-        ShippingAddress,
-        imageUrl,
-        id:Date.now().toString(),
-       });
-        console.log(newCustomer);
-      await newCustomer.save();
-      res.send({msg:"Customer created successfully"});
-    }catch (err){
-     console.log("Error:",err)
-     res.status(500).send({msg:"Something went wrong",error:err.message});
+        const { customerName, Email, Type, CurrentOrders, ShippingAddress, orderData,imageUrl } = req.body;
+
+        // Check if email already exists
+        const existingCustomer = await CustomerModel.findOne({ Email });
+        if (existingCustomer) {
+            return res.status(400).json({ msg: 'Email already exists' });
+        }
+
+        // Create a new customer
+        const newCustomer = new CustomerModel({
+            customerName,
+            Email,
+            Type,
+            CurrentOrders,
+            ShippingAddress,
+            imageUrl,
+            id: Date.now().toString(),
+        });
+
+        await newCustomer.save();
+
+        if (orderData) {
+            // Create a new order
+            const orderId = Date.now().toString();
+            const newOrder = new OrderModel({
+                id: orderId,
+                productName: orderData.productName,
+                quantity: orderData.quantity,
+                pricePerUnit: orderData.pricePerUnit,
+                totalPrice: orderData.totalPrice,
+                customerName: newCustomer.customerName,
+                imageUrl:newCustomer.imageUrl,
+                orderDate: Date.now(),
+            });
+
+            await newOrder.save();
+        }
+
+        res.status(201).send({ msg: 'Customer and order created successfully' });
+    } catch (err) {
+        console.error('Error creating customer and order:', err);
+        res.status(500).send({ msg: 'Failed to create customer and order', error: err.message });
     }
- 
- });
+});
 
 //Update selected customer
  CustomerRouter.put("/:CustomerId",async(req,res) =>{

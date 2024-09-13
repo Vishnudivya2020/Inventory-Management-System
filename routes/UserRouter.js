@@ -34,5 +34,20 @@ UserRouter.post('/', async (req, res) => {
  
  });
 
+ UserRouter.delete('/:UserId', async (req, res) => {
+  const { UserId } = req.params;
+
+  try {
+    const deletedUser = await userModel.deleteOne({ id: UserId });
+    if (deletedUser.deletedCount === 0) {
+      return res.status(404).send({ msg: 'User not found' });
+    }
+    res.send({ msg: 'User deleted successfully' });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send({ msg: 'Error deleting User', error: err.message });
+  }
+});
+
 export default UserRouter ;
 

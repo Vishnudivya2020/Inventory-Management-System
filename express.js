@@ -9,6 +9,7 @@ import  registerRouter from './routes/auth/register.js';
 import  loginRouter from './routes/auth/login.js';
 import UserRouter from './routes/UserRouter.js';
 import AdminRouter from './routes/AdminRouter.js';
+import OrderRouter from './routes/orderRouter.js';
 import verifyUserRouter from './routes/auth/verifyUser.js';
 
 const server =express();
@@ -32,22 +33,22 @@ const customMiddleware =(req,res,next)=>{
 server.use(customMiddleware);
 
 //middleware to authorized the apis
-const authApi =(req,res,next) => {
-    try{
-        const token =req.headers["authorization"];
-        console.log(token);
-         const data = jwt.verify(token,process.env.JWT_SECRET);
-         if(data.role === "admin"){
-            next();
-         }else{
-            throw new Error();
-         }
+// const authApi =(req,res,next) => {
+//     try{
+//         const token =req.headers["authorization"];
+//         console.log(token);
+//          const data = jwt.verify(token,process.env.JWT_SECRET);
+//          if(data.role === "admin"){
+//             next();
+//          }else{
+//             throw new Error();
+//          }
        
-    }catch(err){
-        console.log(err.message);
-        res.status(403).send({msg:"Unathorized"});
-    }
-};
+//     }catch(err){
+//         console.log(err.message);
+//         res.status(403).send({msg:"Unathorized"});
+//     }
+// };
 
 const authAllApi = (req,res,next) =>{
     try{
@@ -63,11 +64,12 @@ const authAllApi = (req,res,next) =>{
 
 
 
- server.use("/Products",authApi,ProductRouter);
+ server.use("/Products",ProductRouter);
  server.use("/Customer",authAllApi,CustomerRouter);
  server.use("/users",authAllApi,UserRouter);
  server.use("/admin",authAllApi,AdminRouter);
  server.use("/verify-user",verifyUserRouter);
+ server.use("/orders",OrderRouter);
  server.use("/register",registerRouter);
  server.use("/login",loginRouter);
  

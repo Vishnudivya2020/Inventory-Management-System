@@ -4,6 +4,7 @@ const orderSchema = new mongoose.Schema({
   id: {
     type: String,
     required: true,
+    default: () => Date.now().toString()
    
   },
   productName: {
@@ -31,12 +32,11 @@ const orderSchema = new mongoose.Schema({
     required: true,
     default: Date.now
   },
-  status: {
-    type: String,
-    required: true,
-    enum: ['Processing', 'Shipped', 'Delivered', 'Cancelled'],
-    default: 'Processing'
+  Products:{
+        type:[String],
+        required:true,
   }
+  
 });
 
 //Model creation using schema

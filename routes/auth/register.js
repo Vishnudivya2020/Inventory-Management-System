@@ -1,62 +1,61 @@
 
-
 import express from "express";
-import { userModel} from "../../db-utils/models/usermodel.js";
+import { userModel } from "../../db-utils/models/usermodel.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 import { mailOptions, transporter } from "../mail-utils.js";
 
 const registerRouter = express.Router();
 
-registerRouter.post("/",async(req,res)=>{
-    const userData = req.body;
+const ADMIN_SECRET_KEY = "IMS"; // Replace with your actual secret key
 
-    console.log(userData);
-  
-    //check if the user already exists
-    const userObj = await userModel.findOne({email:userData.email});
+registerRouter.post("/", async (req, res) => {
+  const userData = req.body;
 
-    if(userObj){
-        res.status(400).send({msg:"User already exists"});
-    }else{
-        const id = Date.now().toString();
+  // Check if the user already exists
+  const userObj = await userModel.findOne({ email: userData.email });
 
-        bcrypt.hash(userData.password,10, async (err,hash)=>{
-            //store hash in your password DB.
-            if(err){
-                res.status(500).send({msg:"Please enter a proper password"});
+  if (userObj) {
+    return res.status(400).send({ msg: "User already exists" });
+  }
 
-            }else{
-                const newUser = await new userModel({
-                    ...userData,
-                    password:hash,
-                   id, 
-                   isVerified:false,
-                   profilePicUrl: userData.profilePicUrl || null,
-             });
-             var token = jwt.sign(
-                {name:userData.name,email:userData.email},
-                process.env.JWT_SECRET,
-                {
-                expiresIn:"1d",
-             }
-            );
-        await newUser.save(); //validates and inserts the record
-         await transporter.sendMail({
-        ...mailOptions,
-        to: userData.email, 
-        subject:"Welcome to the Application,verify Accound",
-        text:`To continue,Please verify your Email Address ${process.env.FE_URL}/verify-account?token=${token}`,
+  // Check if the role is admin and validate the secret key
+  if (userData.role === "admin" && userData.secretKey !== ADMIN_SECRET_KEY) {
+    return res.status(403).send({ msg: "You are not authorized to register as admin" });
+  }
 
-         });
-        res.send({msg:"User saved SuccessFully"});
+  const id = Date.now().toString();
+
+  bcrypt.hash(userData.password, 10, async (err, hash) => {
+    if (err) {
+      return res.status(500).send({ msg: "Please enter a proper password" });
     }
+
+    const newUser = new userModel({
+      ...userData,
+      password: hash,
+      id,
+      isVerified: false,
+      profilePicUrl: userData.profilePicUrl || null,
+    });
+
+    const token = jwt.sign(
+      { name: userData.name, email: userData.email },
+      process.env.JWT_SECRET,
+      { expiresIn: "1d" }
+    );
+
+    await newUser.save(); // Save the user in the database
+
+    await transporter.sendMail({
+      ...mailOptions,
+      to: userData.email,
+      subject: "Welcome to the Application, verify your account",
+      text: `To continue, please verify your email address: ${process.env.FE_URL}/verify-account?token=${token}`,
+    });
+
+    res.send({ msg: "User saved successfully" });
+  });
 });
- } 
 
-});
- 
-export default  registerRouter;
-
-
-
+export default registerRouter;

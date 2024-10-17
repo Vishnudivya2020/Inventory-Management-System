@@ -24,7 +24,7 @@ loginRouter.post("/",async(req,res)=>{
         }else{
             if(result){
                 // console.log("userObj:",userObj);
-                // const User=await userModel.findOne(
+               
                     const collection = db.collection("users");
                     const User = await collection.findOne(
                     {email:userData.email},

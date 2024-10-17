@@ -14,7 +14,7 @@ UserRouter.get('/', async (req, res) => {
     }
 });
 
-// create new user
+// create a new user
 UserRouter.post('/', async (req, res) => {
     const {body} =req;
     console.log("Received body:",body);

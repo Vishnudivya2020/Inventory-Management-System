@@ -1,4 +1,4 @@
-
+//   User model (models/userModel.js)
 import mongoose from "mongoose";
 
 const userSchema = new mongoose.Schema({
@@ -17,23 +17,30 @@ const userSchema = new mongoose.Schema({
     },
     role: {
         type: String,
-        required:true,
+        required: true,
     },
     id: {
         type: String,
         required: true,
     },
     isVerified: {
-        type: "boolean",
+        type: Boolean,
         required: false,
-      },
-      profilePicUrl: {    
-        type: String,
-        required:false, // You can make this required if needed
     },
-
+    profilePicUrl: {    
+        type: String,
+        required: false,
+    },
+    resetPasswordToken: {
+        type: String,
+    },
+    resetPasswordExpires: {
+        type: Date,
+    }
 });
+
 
 const userModel = mongoose.model('users', userSchema, "users");
 
-export { userModel};
+export { userModel };
+

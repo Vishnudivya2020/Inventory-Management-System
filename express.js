@@ -23,7 +23,7 @@ server.use(express.json());
 server.use(express.urlencoded({ extended: true }));
  
 server.use(cors({
-    origin: 'http://localhost:5173',
+    origin:['http://localhost:5173','https://harmonious-mousse-b2eb6f.netlify.app'],
     methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'], // Allow all necessary methods
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true, // Allow cookies if required

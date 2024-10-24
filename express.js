@@ -61,11 +61,11 @@ const authAllApi = (req, res, next) => {
 
 
 
- server.use("/Products",ProductRouter);
+ server.use("/Products",authAllApi,ProductRouter);
  server.use("/Customer",authAllApi,CustomerRouter);
  server.use("/users",authAllApi,UserRouter);
  server.use("/verify-user",verifyUserRouter);
- server.use("/orders",OrderRouter);
+ server.use("/orders",authAllApi,OrderRouter);
  server.use("/forgot-password",forgotPassword );
  server.use("/reset-password",resetPassword);
  server.use("/register",registerRouter);
